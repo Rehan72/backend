@@ -17,6 +17,14 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+const authorizeSuperAdmin = (req, res, next) => {
+  if (req.user.role !== 'superAdmin') {
+    return res.status(403).json({ error: 'Access denied. SuperAdmin role required.' });
+  }
+  next();
+};
+
 module.exports = {
   authenticateToken,
+  authorizeSuperAdmin,
 };

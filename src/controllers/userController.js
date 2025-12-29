@@ -51,7 +51,8 @@ const deleteUser = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const user = await userService.createUser(req.body);
+    const userData = { ...req.body, role: 'user' }; // Ensure new users are registered as 'user'
+    const user = await userService.createUser(userData);
     res.status(201).json({ message: 'User registered successfully', user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -61,11 +62,17 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
     const user = await userService.authenticateUser(email, password);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '1h' });
     res.json({ message: 'Login successful', token });
   } catch (error) {
     res.status(500).json({ error: error.message });

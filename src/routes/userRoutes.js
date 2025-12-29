@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { authenticateToken } = require('../middlewares/authMiddleware');
+const { authenticateToken, authorizeSuperAdmin } = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
@@ -70,7 +70,7 @@ router.post('/login', userController.login);
  *       200:
  *         description: List of users
  */
-router.get('/', authenticateToken, userController.getUsers);
+router.get('/', authenticateToken, authorizeSuperAdmin, userController.getUsers);
 
 /**
  * @swagger
@@ -106,7 +106,7 @@ router.get('/', authenticateToken, userController.getUsers);
  *       201:
  *         description: User created
  */
-router.post('/', authenticateToken, userController.createUser);
+router.post('/', authenticateToken, authorizeSuperAdmin, userController.createUser);
 
 /**
  * @swagger
@@ -125,7 +125,7 @@ router.post('/', authenticateToken, userController.createUser);
  *       200:
  *         description: User data
  */
-router.get('/:id', authenticateToken, userController.getUserById);
+router.get('/:id', authenticateToken, authorizeSuperAdmin, userController.getUserById);
 
 /**
  * @swagger
@@ -157,7 +157,7 @@ router.get('/:id', authenticateToken, userController.getUserById);
  *       200:
  *         description: User updated
  */
-router.put('/:id', authenticateToken, userController.updateUser);
+router.put('/:id', authenticateToken, authorizeSuperAdmin, userController.updateUser);
 
 /**
  * @swagger
@@ -176,6 +176,6 @@ router.put('/:id', authenticateToken, userController.updateUser);
  *       200:
  *         description: User deleted
  */
-router.delete('/:id', authenticateToken, userController.deleteUser);
+router.delete('/:id', authenticateToken, authorizeSuperAdmin, userController.deleteUser);
 
 module.exports = router;
