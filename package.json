@@ -1,0 +1,32 @@
+{
+  "name": "bun-node-hybrid-backend",
+  "version": "1.0.0",
+  "description": "A hybrid backend project using Bun for development and Node.js for production",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "bun --hot src/index.js",
+    "build": "bun build src/index.js --outdir dist",
+    "start": "node dist/index.js",
+    "test": "bun test",
+    "install-deps": "bun install"
+  },
+  "keywords": ["backend", "nodejs", "bun", "hybrid"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^7.5.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
