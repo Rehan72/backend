@@ -1,7 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const User = require('./models/User');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const app = express();
@@ -41,6 +44,7 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 // Swagger
@@ -54,7 +58,25 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/myapp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB connected'))
+.then(async () => {
+  console.log('MongoDB connected');
+  // Check and create superadmin
+  const superAdminExists = await User.findOne({ role: 'superAdmin' });
+  if (!superAdminExists) {
+    const hashedPassword = await bcrypt.hash('superadmin123', 10);
+    const superAdmin = new User({
+      name: 'Super Admin',
+      email: 'superadmin@example.com',
+      phoneNumber: '1234567890',
+      password: hashedPassword,
+      role: 'superAdmin'
+    });
+    await superAdmin.save();
+    console.log('Superadmin created');
+  } else {
+    console.log('Superadmin already exists');
+  }
+})
 .catch(err => console.error('MongoDB connection error:', err));
 
 const PORT = process.env.PORT || 3001;
